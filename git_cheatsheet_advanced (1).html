@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Git Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+/* ── Theme Variables ──────────────────────────────────────────── */
+:root { --transition: 0.28s cubic-bezier(.4,0,.2,1); }
+
+[data-theme="dark"] {
+  --bg:          #0d0f14;
+  --surface:     #141820;
+  --surface2:    #1c2130;
+  --surface3:    #222a3a;
+  --border:      #252d40;
+  --border2:     #2e3a52;
+  --accent:      #00e5a0;
+  --accent-dim:  rgba(0,229,160,0.10);
+  --accent2:     #0084ff;
+  --warn:        #ff6b35;
+  --warn-dim:    rgba(255,107,53,0.13);
+  --text:        #cdd6f4;
+  --text2:       #8b9bbf;
+  --muted:       #4e5e7e;
+  --code:        #a6e3a1;
+  --orig:        #7c9cbf;
+  --edit-bg:     #0d1520;
+  --edit-border: #00e5a0;
+  --header-glow: rgba(0,229,160,0.10);
+  --scrollbar:   #252d40;
+}
+
+[data-theme="light"] {
+  --bg:          #f5f0e8;
+  --surface:     #faf7f2;
+  --surface2:    #f0ebe0;
+  --surface3:    #e8e0d0;
+  --border:      #ddd5c4;
+  --border2:     #ccc2ae;
+  --accent:      #c77b3a;
+  --accent-dim:  rgba(199,123,58,0.10);
+  --accent2:     #8b6914;
+  --warn:        #c0392b;
+  --warn-dim:    rgba(192,57,43,0.10);
+  --text:        #2d2520;
+  --text2:       #6b5b48;
+  --muted:       #a09080;
+  --code:        #5a3e28;
+  --orig:        #8b6048;
+  --edit-bg:     #fefcf8;
+  --edit-border: #c77b3a;
+  --header-glow: rgba(199,123,58,0.10);
+  --scrollbar:   #ddd5c4;
+}
+
+/* ── Reset & Base ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  min-height: 100vh;
+  padding: 1.5rem 1.2rem 5rem;
+  transition: background var(--transition), color var(--transition);
+}
+
+body::after {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.container { max-width: 1400px; margin: 0 auto; position: relative; z-index: 1; }
+
+/* ── Header ───────────────────────────────────────────────────── */
+header {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.4rem 1.8rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 1rem;
+  position: relative; overflow: hidden;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+header::before {
+  content: '';
+  position: absolute; top: -80px; left: 40%; transform: translateX(-50%);
+  width: 360px; height: 220px;
+  background: radial-gradient(ellipse, var(--header-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.header-left { display: flex; align-items: center; gap: 1rem; }
+.header-left .logo { font-size: 1.6rem; line-height: 1; }
+
+.header-left h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  font-weight: 800; letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+.header-left p { font-size: 0.68rem; color: var(--text2); margin-top: 2px; }
+.header-right { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+
+/* ── Controls bar ─────────────────────────────────────────────── */
+.controls-bar {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.stats-group { display: flex; gap: 0.9rem; flex-wrap: wrap; align-items: center; }
+.stat-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; color: var(--text2); }
+.stat-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+.stat-dot.warn { background: var(--warn); }
+.stat-dot.edit { background: var(--accent2); }
+
+/* ── Layout Switcher ──────────────────────────────────────────── */
+.layout-switcher { display: flex; align-items: center; gap: 0.4rem; }
+.layout-switcher label { font-size: 0.68rem; color: var(--muted); margin-right: 0.2rem; }
+
+.layout-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--muted);
+  padding: 5px 11px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 5px;
+  transition: all 0.18s; white-space: nowrap;
+}
+.layout-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+.layout-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); font-weight: 600; }
+
+/* ── Theme Toggle ─────────────────────────────────────────────── */
+.theme-toggle {
+  display: flex; align-items: center; gap: 0.45rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 30px;
+  padding: 4px 10px 4px 6px;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem; color: var(--text2);
+  transition: all var(--transition); user-select: none;
+}
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+.toggle-track {
+  width: 30px; height: 16px;
+  background: var(--surface3);
+  border-radius: 99px; border: 1px solid var(--border2);
+  position: relative; transition: background var(--transition); flex-shrink: 0;
+}
+.toggle-track::after {
+  content: '';
+  position: absolute; top: 2px; left: 2px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--muted);
+  transition: transform 0.25s ease, background 0.25s;
+}
+[data-theme="dark"] .toggle-track { background: var(--accent-dim); border-color: var(--accent); }
+[data-theme="dark"] .toggle-track::after { transform: translateX(14px); background: var(--accent); }
+
+/* ── Sections Grid ────────────────────────────────────────────── */
+#sections {
+  display: grid;
+  gap: 0.9rem;
+  align-items: start;
+}
+#sections.layout-1col { grid-template-columns: 1fr; }
+#sections.layout-2col { grid-template-columns: repeat(2, 1fr); }
+#sections.layout-3col { grid-template-columns: repeat(3, 1fr); }
+
+/* ── Section ──────────────────────────────────────────────────── */
+.section {
+  border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+  transition: border-color var(--transition), box-shadow 0.2s;
+  animation: fadeUp 0.35s ease both;
+}
+.section:hover { box-shadow: 0 2px 14px rgba(0,0,0,0.07); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.section-header {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  cursor: pointer; user-select: none;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition), border-color var(--transition);
+}
+.section-header:hover { background: var(--surface2); }
+.section-header .s-icon { font-size: 0.95rem; }
+
+.section-header h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--accent); flex: 1;
+  transition: color var(--transition);
+}
+
+.section-header .count {
+  font-size: 0.6rem; color: var(--muted);
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 20px; padding: 1px 6px;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.chevron { color: var(--muted); font-size: 0.65rem; transition: transform 0.22s ease; margin-left: 2px; }
+.section.collapsed .chevron { transform: rotate(-90deg); }
+.section.collapsed .section-body { display: none; }
+.section-body { background: var(--surface); transition: background var(--transition); }
+
+/* ── Command Row ──────────────────────────────────────────────── */
+.cmd-row { border-bottom: 1px solid var(--border); transition: border-color var(--transition); }
+.cmd-row:last-child { border-bottom: none; }
+
+.cmd-main {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  padding: 0.6rem 0.9rem;
+  transition: background 0.15s;
+}
+.cmd-row:hover .cmd-main { background: var(--surface2); }
+
+.cmd-content { flex: 1; min-width: 0; }
+
+.cmd-code-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.77rem; color: var(--code);
+  word-break: break-all; white-space: pre-wrap;
+  transition: color var(--transition); line-height: 1.4;
+}
+
+.cmd-comment { font-size: 0.67rem; color: var(--text2); margin-top: 2px; transition: color var(--transition); }
+
+/* Edit panel */
+.cmd-edit-panel {
+  display: none;
+  padding: 0.45rem 0.9rem 0.65rem;
+  background: var(--edit-bg);
+  border-top: 1px dashed var(--border2);
+  transition: background var(--transition), border-color var(--transition);
+}
+.cmd-row.editing .cmd-edit-panel { display: block; }
+.cmd-row.editing .cmd-main { background: var(--accent-dim); }
+
+.edit-label { font-size: 0.6rem; color: var(--muted); margin-bottom: 4px; letter-spacing: 0.06em; text-transform: uppercase; }
+
+.edit-input {
+  width: 100%; background: var(--surface);
+  border: 1px solid var(--edit-border); border-radius: 6px;
+  padding: 6px 9px;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.77rem;
+  color: var(--code); outline: none;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+.edit-input:focus { border-color: var(--accent); }
+
+.original-ref {
+  margin-top: 5px; display: flex; align-items: flex-start; gap: 0.4rem;
+  font-size: 0.65rem; color: var(--orig); transition: color var(--transition);
+}
+.original-ref .orig-label { flex-shrink: 0; font-weight: 600; opacity: 0.75; }
+.original-ref .orig-code  { word-break: break-all; white-space: pre-wrap; opacity: 0.8; font-style: italic; flex: 1; }
+
+.reset-btn {
+  background: none; border: none; cursor: pointer;
+  font-size: 0.62rem; color: var(--orig); padding: 0; flex-shrink: 0;
+  text-decoration: underline; text-underline-offset: 2px;
+  opacity: 0.75; transition: opacity 0.15s, color var(--transition);
+  font-family: 'JetBrains Mono', monospace;
+}
+.reset-btn:hover { opacity: 1; color: var(--accent); }
+
+/* ── Buttons ──────────────────────────────────────────────────── */
+.btn-group { display: flex; gap: 4px; flex-shrink: 0; align-items: flex-start; padding-top: 1px; }
+
+.btn {
+  background: transparent; border: 1px solid var(--border); border-radius: 5px;
+  color: var(--muted); padding: 3px 7px;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.6rem;
+  cursor: pointer; transition: all 0.18s; white-space: nowrap;
+  display: flex; align-items: center; gap: 3px; line-height: 1.4;
+}
+.btn:hover                     { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+.btn.edit-btn:hover             { border-color: var(--accent2); color: var(--accent2); background: rgba(0,132,255,0.08); }
+.cmd-row.editing .btn.edit-btn  { border-color: var(--accent2); color: var(--accent2); background: rgba(0,132,255,0.1); }
+.btn.copy-btn.copied            { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+.warn-badge {
+  font-size: 0.58rem;
+  background: var(--warn-dim); color: var(--warn);
+  border: 1px solid rgba(255,107,53,0.25);
+  border-radius: 4px; padding: 1px 4px; margin-left: 5px; vertical-align: middle;
+  transition: background var(--transition), color var(--transition);
+}
+
+.modified-badge {
+  font-size: 0.58rem;
+  background: rgba(0,132,255,0.12); color: var(--accent2);
+  border: 1px solid rgba(0,132,255,0.25);
+  border-radius: 4px; padding: 1px 4px; margin-left: 5px; vertical-align: middle;
+  display: none;
+}
+.cmd-row.modified .modified-badge { display: inline; }
+
+/* ── Scrollbar ────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 3px; }
+
+/* ── Footer ───────────────────────────────────────────────────── */
+footer {
+  text-align: center; margin-top: 2rem;
+  color: var(--muted); font-size: 0.65rem; line-height: 2;
+  transition: color var(--transition);
+}
+footer .warn-text   { color: var(--warn); }
+footer .accent-text { color: var(--accent); }
+
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  #sections.layout-3col { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 620px) {
+  #sections.layout-2col,
+  #sections.layout-3col { grid-template-columns: 1fr; }
+  .controls-bar { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="header-left">
+      <span class="logo">⎇</span>
+      <div>
+        <h1>Git Cheat Sheet</h1>
+        <p>✎ Edit any command · ↺ Reset to original · Click section header to collapse · Preferences auto-saved</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle" id="themeToggle" title="Switch theme">
+        <div class="toggle-track"></div>
+        <span id="themeLabel"></span>
+      </div>
+    </div>
+  </header>
+
+  <div class="controls-bar">
+    <div class="stats-group">
+      <div class="stat-item"><span class="stat-dot"></span><span id="totalCount">0 commands</span></div>
+      <div class="stat-item"><span class="stat-dot warn"></span><span id="dangerCount">0 dangerous</span></div>
+      <div class="stat-item"><span class="stat-dot edit"></span><span id="editedCount">0 edited</span></div>
+    </div>
+    <div class="layout-switcher">
+      <label>Layout:</label>
+      <button class="layout-btn" data-layout="1col" title="Single column">▬ Single</button>
+      <button class="layout-btn" data-layout="2col" title="Two columns">⊟ 2 Col</button>
+      <button class="layout-btn" data-layout="3col" title="Three columns">⊞ 3 Col</button>
+    </div>
+  </div>
+
+  <div id="sections"></div>
+
+  <footer>
+    <span class="warn-text">⚠ DANGER</span> commands can cause irreversible data loss — use carefully.<br/>
+    <span class="accent-text">✎ Edit</span> any command to personalise it — the original is always preserved below for reference.<br/>
+    Your layout, theme &amp; edits are saved in your browser and restored on next visit.
+  </footer>
+</div>
+
+<script>
+/* ── Data ─────────────────────────────────────────────────────── */
+const data = [
+  { icon:'🔧', title:'Setup & Configuration', commands:[
+    { cmd:'git config --global user.name "Your Name"',       comment:'Set your global username' },
+    { cmd:'git config --global user.email "you@email.com"',  comment:'Set your global email' },
+    { cmd:'git config --list',                                comment:'View all config settings' },
+    { cmd:'git config --global core.editor "code --wait"',   comment:'Set VS Code as default editor' },
+    { cmd:'git config --global alias.st status',             comment:'Create a shortcut alias (e.g. git st)' },
+  ]},
+  { icon:'📁', title:'Starting a Repository', commands:[
+    { cmd:'git init',                   comment:'Initialize a new local repository' },
+    { cmd:'git clone <url>',            comment:'Clone a remote repository' },
+    { cmd:'git clone <url> my-folder',  comment:'Clone into a specific folder name' },
+    { cmd:'git clone --depth 1 <url>',  comment:'Shallow clone — latest snapshot only, faster' },
+  ]},
+  { icon:'📸', title:'Staging & Committing', commands:[
+    { cmd:'git status',                     comment:'Check working tree status' },
+    { cmd:'git add <file>',                 comment:'Stage a specific file' },
+    { cmd:'git add .',                      comment:'Stage all changes in current directory' },
+    { cmd:'git add -p',                     comment:'Interactively stage chunks hunk-by-hunk' },
+    { cmd:'git commit -m "Your message"',   comment:'Commit staged changes with a message' },
+    { cmd:'git commit --amend',             comment:'Edit the last commit message or add staged changes' },
+    { cmd:'git commit -am "message"',       comment:'Stage tracked files and commit in one step' },
+  ]},
+  { icon:'🌿', title:'Branching', commands:[
+    { cmd:'git branch',                comment:'List all local branches' },
+    { cmd:'git branch -a',             comment:'List all branches — local + remote' },
+    { cmd:'git branch <n>',            comment:'Create a new branch' },
+    { cmd:'git checkout <n>',          comment:'Switch to a branch' },
+    { cmd:'git checkout -b <n>',       comment:'Create and switch to a new branch' },
+    { cmd:'git switch <n>',            comment:'Modern way to switch branches' },
+    { cmd:'git switch -c <n>',         comment:'Modern: create and switch to new branch' },
+    { cmd:'git branch -d <n>',         comment:'Delete a branch (safe — only if merged)' },
+    { cmd:'git branch -D <n>',         comment:'Force delete a branch', danger:true },
+    { cmd:'git branch -m <old> <new>', comment:'Rename a branch' },
+  ]},
+  { icon:'🔀', title:'Merging & Rebasing', commands:[
+    { cmd:'git merge <branch>',          comment:'Merge a branch into the current branch' },
+    { cmd:'git merge --no-ff <branch>',  comment:'Merge with a commit — no fast-forward' },
+    { cmd:'git merge --squash <branch>', comment:'Squash all commits into one before merging' },
+    { cmd:'git rebase <branch>',         comment:'Rebase current branch onto another' },
+    { cmd:'git rebase -i HEAD~3',        comment:'Interactive rebase for last 3 commits' },
+    { cmd:'git cherry-pick <hash>',      comment:'Apply a specific commit onto current branch' },
+    { cmd:'git merge --abort',           comment:'Abort an in-progress merge' },
+    { cmd:'git rebase --abort',          comment:'Abort an in-progress rebase' },
+  ]},
+  { icon:'🌐', title:'Remote Repositories', commands:[
+    { cmd:'git remote -v',                 comment:'View all remote connections' },
+    { cmd:'git remote add origin <url>',   comment:'Add a remote named origin' },
+    { cmd:'git remote remove <n>',         comment:'Remove a remote connection' },
+    { cmd:'git push origin <branch>',      comment:'Push a branch to remote' },
+    { cmd:'git push -u origin <branch>',   comment:'Push and set upstream tracking branch' },
+    { cmd:'git push --force-with-lease',   comment:'Safer force push — checks for remote changes', danger:true },
+    { cmd:'git pull',                       comment:'Fetch and merge from upstream' },
+    { cmd:'git pull --rebase',             comment:'Fetch and rebase instead of merge' },
+    { cmd:'git fetch',                      comment:'Fetch remote changes without merging' },
+    { cmd:'git fetch --prune',             comment:'Fetch and remove stale remote-tracking branches' },
+  ]},
+  { icon:'🔍', title:'Inspecting & Logging', commands:[
+    { cmd:'git log',                         comment:'Full commit history' },
+    { cmd:'git log --oneline',               comment:'Compact one-line commit history' },
+    { cmd:'git log --oneline --graph --all', comment:'Visual branch graph of entire history' },
+    { cmd:'git log -p <file>',               comment:'Show all changes made to a specific file' },
+    { cmd:'git log --author="Name"',         comment:'Filter commits by author' },
+    { cmd:'git log --since="2 weeks ago"',   comment:'Commits from a relative time range' },
+    { cmd:'git diff',                         comment:'Show unstaged changes' },
+    { cmd:'git diff --staged',               comment:'Show staged changes ready to commit' },
+    { cmd:'git show <hash>',                 comment:'Show details and diff of a specific commit' },
+    { cmd:'git blame <file>',                comment:'Show who last changed each line of a file' },
+  ]},
+  { icon:'⏪', title:'Undoing Changes', commands:[
+    { cmd:'git restore <file>',          comment:'Discard unstaged changes in a file' },
+    { cmd:'git restore --staged <file>', comment:'Unstage a file — keep changes' },
+    { cmd:'git revert <hash>',           comment:'Create a new commit that undoes a commit' },
+    { cmd:'git reset --soft HEAD~1',     comment:'Undo last commit, keep changes staged' },
+    { cmd:'git reset --mixed HEAD~1',    comment:'Undo last commit, keep changes unstaged' },
+    { cmd:'git reset --hard HEAD~1',     comment:'Undo last commit, discard ALL changes', danger:true },
+    { cmd:'git clean -fd',               comment:'Remove all untracked files and directories', danger:true },
+    { cmd:'git reflog',                   comment:'View history of HEAD — great for recovery' },
+  ]},
+  { icon:'🗂️', title:'Stashing', commands:[
+    { cmd:'git stash',                       comment:'Stash current uncommitted changes' },
+    { cmd:'git stash push -m "description"', comment:'Stash with a descriptive label' },
+    { cmd:'git stash list',                   comment:'List all stashes' },
+    { cmd:'git stash pop',                    comment:'Apply and remove the latest stash' },
+    { cmd:'git stash apply stash@{2}',       comment:'Apply a specific stash without removing it' },
+    { cmd:'git stash drop stash@{0}',        comment:'Delete a specific stash' },
+    { cmd:'git stash clear',                  comment:'Remove all stashes', danger:true },
+  ]},
+  { icon:'🏷️', title:'Tags', commands:[
+    { cmd:'git tag',                        comment:'List all tags' },
+    { cmd:'git tag v1.0.0',                 comment:'Create a lightweight tag at current commit' },
+    { cmd:'git tag -a v1.0.0 -m "Release"',comment:'Create an annotated tag with a message' },
+    { cmd:'git push origin v1.0.0',         comment:'Push a specific tag to remote' },
+    { cmd:'git push origin --tags',         comment:'Push all tags to remote' },
+    { cmd:'git tag -d v1.0.0',             comment:'Delete a local tag' },
+  ]},
+  { icon:'💡', title:'Handy Shortcuts', commands:[
+    { cmd:'git shortlog -sn',                       comment:'Commit count ranked by contributor' },
+    { cmd:'git bisect start',                        comment:'Start binary search to find a bug-introducing commit' },
+    { cmd:'git archive --format=zip HEAD > out.zip',comment:'Export the repo as a zip file' },
+    { cmd:'git remote prune origin',                 comment:'Clean up stale remote-tracking branches' },
+    { cmd:'git grep "search term"',                 comment:'Search for a string across all tracked files' },
+    { cmd:'git stash branch <n>',                   comment:'Create a branch from a stash' },
+  ]},
+];
+
+/* ── Persistence ──────────────────────────────────────────────── */
+const LS_THEME  = 'gitcs_theme';
+const LS_LAYOUT = 'gitcs_layout';
+const LS_EDITS  = 'gitcs_edits';
+
+function save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
+function load(key, fallback) {
+  try { const v = localStorage.getItem(key); return v !== null ? JSON.parse(v) : fallback; }
+  catch(e) { return fallback; }
+}
+
+/* ── State (load from storage or defaults) ────────────────────── */
+let currentTheme  = load(LS_THEME,  'light');
+let currentLayout = load(LS_LAYOUT, '2col');
+const editedValues = load(LS_EDITS, {});
+
+/* ── Apply theme ──────────────────────────────────────────────── */
+function applyTheme(theme) {
+  currentTheme = theme;
+  document.documentElement.setAttribute('data-theme', theme);
+  // Label shows what you'll SWITCH TO (the opposite action)
+  document.getElementById('themeLabel').textContent = theme === 'dark' ? '☀ Light' : '☾ Dark';
+  save(LS_THEME, theme);
+}
+
+/* ── Apply layout ─────────────────────────────────────────────── */
+function applyLayout(layout) {
+  currentLayout = layout;
+  document.getElementById('sections').className = 'layout-' + layout;
+  document.querySelectorAll('.layout-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.layout === layout);
+  });
+  save(LS_LAYOUT, layout);
+}
+
+/* ── Stats ────────────────────────────────────────────────────── */
+function recountEdited() {
+  let count = 0;
+  data.forEach((sec, si) => sec.commands.forEach((c, ci) => {
+    if (editedValues[`${si}-${ci}`] && editedValues[`${si}-${ci}`] !== c.cmd) count++;
+  }));
+  document.getElementById('editedCount').textContent = count + ' edited';
+}
+
+function updateStats() {
+  const total  = data.reduce((s, sec) => s + sec.commands.length, 0);
+  const danger = data.reduce((s, sec) => s + sec.commands.filter(c => c.danger).length, 0);
+  document.getElementById('totalCount').textContent  = total  + ' commands';
+  document.getElementById('dangerCount').textContent = danger + ' dangerous';
+  recountEdited();
+}
+
+/* ── Build sections ───────────────────────────────────────────── */
+function buildUI() {
+  const container = document.getElementById('sections');
+  container.innerHTML = '';
+
+  data.forEach((sec, si) => {
+    const secEl = document.createElement('div');
+    secEl.className = 'section';
+    secEl.style.animationDelay = (si * 0.04) + 's';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'section-header';
+    hdr.innerHTML = `<span class="s-icon">${sec.icon}</span><h2>${sec.title}</h2><span class="count">${sec.commands.length}</span><span class="chevron">▾</span>`;
+    hdr.addEventListener('click', () => secEl.classList.toggle('collapsed'));
+
+    const body = document.createElement('div');
+    body.className = 'section-body';
+
+    sec.commands.forEach((c, ci) => {
+      const key = `${si}-${ci}`;
+      if (editedValues[key] === undefined) editedValues[key] = c.cmd;
+
+      const row = document.createElement('div');
+      row.className = 'cmd-row';
+      if (editedValues[key] !== c.cmd) row.classList.add('modified');
+
+      /* Main row */
+      const main = document.createElement('div');
+      main.className = 'cmd-main';
+
+      const content = document.createElement('div');
+      content.className = 'cmd-content';
+
+      const codeEl = document.createElement('div');
+      codeEl.className = 'cmd-code-display';
+      codeEl.appendChild(document.createTextNode(editedValues[key]));
+
+      if (c.danger) {
+        const wb = document.createElement('span');
+        wb.className = 'warn-badge'; wb.textContent = '⚠ DANGER';
+        codeEl.appendChild(wb);
+      }
+      const mb = document.createElement('span');
+      mb.className = 'modified-badge'; mb.textContent = '✎ edited';
+      codeEl.appendChild(mb);
+
+      const commentEl = document.createElement('div');
+      commentEl.className = 'cmd-comment';
+      commentEl.textContent = c.comment;
+
+      content.appendChild(codeEl);
+      content.appendChild(commentEl);
+
+      /* Buttons */
+      const btnGroup = document.createElement('div');
+      btnGroup.className = 'btn-group';
+
+      const editBtn = document.createElement('button');
+      editBtn.className = 'btn edit-btn';
+      editBtn.innerHTML = '✎ Edit';
+      editBtn.title = 'Edit this command';
+
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'btn copy-btn';
+      copyBtn.innerHTML = '⧉ Copy';
+      copyBtn.title = 'Copy to clipboard';
+
+      editBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (row.classList.contains('editing')) {
+          const inp = row.querySelector('.edit-input');
+          const val = inp.value.trim() || c.cmd;
+          editedValues[key] = val;
+          save(LS_EDITS, editedValues);
+          codeEl.firstChild.textContent = val;
+          row.classList.remove('editing');
+          row.classList.toggle('modified', val !== c.cmd);
+          editBtn.innerHTML = '✎ Edit';
+          recountEdited();
+        } else {
+          row.classList.add('editing');
+          editBtn.innerHTML = '✓ Done';
+          setTimeout(() => row.querySelector('.edit-input').focus(), 40);
+        }
+      });
+
+      copyBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(editedValues[key]).then(() => {
+          copyBtn.innerHTML = '✓ Copied';
+          copyBtn.classList.add('copied');
+          setTimeout(() => { copyBtn.innerHTML = '⧉ Copy'; copyBtn.classList.remove('copied'); }, 1600);
+        });
+      });
+
+      btnGroup.appendChild(editBtn);
+      btnGroup.appendChild(copyBtn);
+      main.appendChild(content);
+      main.appendChild(btnGroup);
+
+      /* Edit panel */
+      const editPanel = document.createElement('div');
+      editPanel.className = 'cmd-edit-panel';
+
+      const editLbl = document.createElement('div');
+      editLbl.className = 'edit-label';
+      editLbl.textContent = 'Customise command:';
+
+      const input = document.createElement('input');
+      input.className = 'edit-input';
+      input.type = 'text';
+      input.value = editedValues[key];
+      input.spellcheck = false;
+      input.addEventListener('input', () => {
+        editedValues[key] = input.value;
+        codeEl.firstChild.textContent = input.value || c.cmd;
+      });
+      input.addEventListener('keydown', (e) => { if (e.key === 'Enter') editBtn.click(); });
+
+      const origRef = document.createElement('div');
+      origRef.className = 'original-ref';
+
+      const origLabel = document.createElement('span');
+      origLabel.className = 'orig-label';
+      origLabel.textContent = 'Original:';
+
+      const origCode = document.createElement('span');
+      origCode.className = 'orig-code';
+      origCode.textContent = c.cmd;
+
+      const resetBtn = document.createElement('button');
+      resetBtn.className = 'reset-btn';
+      resetBtn.textContent = '↺ Reset';
+      resetBtn.addEventListener('click', () => {
+        input.value = c.cmd;
+        editedValues[key] = c.cmd;
+        save(LS_EDITS, editedValues);
+        codeEl.firstChild.textContent = c.cmd;
+        row.classList.remove('modified');
+        recountEdited();
+      });
+
+      origRef.appendChild(origLabel);
+      origRef.appendChild(origCode);
+      origRef.appendChild(resetBtn);
+      editPanel.appendChild(editLbl);
+      editPanel.appendChild(input);
+      editPanel.appendChild(origRef);
+
+      row.appendChild(main);
+      row.appendChild(editPanel);
+      body.appendChild(row);
+    });
+
+    secEl.appendChild(hdr);
+    secEl.appendChild(body);
+    container.appendChild(secEl);
+  });
+}
+
+/* ── Event listeners ──────────────────────────────────────────── */
+document.getElementById('themeToggle').addEventListener('click', () => {
+  applyTheme(currentTheme === 'light' ? 'dark' : 'light');
+});
+
+document.querySelectorAll('.layout-btn').forEach(btn => {
+  btn.addEventListener('click', () => applyLayout(btn.dataset.layout));
+});
+
+/* ── Boot ─────────────────────────────────────────────────────── */
+buildUI();
+applyTheme(currentTheme);   // sets label correctly + applies saved theme
+applyLayout(currentLayout); // marks active button + applies saved layout
+updateStats();
+</script>
+</body>
+</html>
