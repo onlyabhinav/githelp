@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Quiet Lead — A Personal Handbook</title>
+<meta name="description" content="A personal reference for refining communication, handling conflict, and growing from engineer to leader." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600&family=JetBrains+Mono:wght@400;500&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ---------- Tokens ---------- */
+:root{
+  --ink: #1a1814;
+  --ink-soft: #3b342b;
+  --paper: #f4ece0;
+  --paper-warm: #ece2d2;
+  --paper-deep: #e2d6bf;
+  --rule: #c9bba0;
+  --accent: #a8331f;          /* oxblood */
+  --accent-soft: #c85a3f;
+  --ok: #4a6b3a;
+  --bad: #a8331f;
+  --hl: #f0d56a;              /* highlight marker */
+  --shadow: 0 1px 0 rgba(26,24,20,.08), 0 10px 30px -20px rgba(26,24,20,.35);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink: #eadfcd;
+    --ink-soft: #bcae97;
+    --paper: #1b1714;
+    --paper-warm: #231e1a;
+    --paper-deep: #2a231e;
+    --rule: #4a3e30;
+    --accent: #e07556;
+    --accent-soft: #f0a089;
+    --ok: #9dbe86;
+    --bad: #e07556;
+    --hl: #6b5a1a;
+    --shadow: 0 1px 0 rgba(0,0,0,.4), 0 10px 30px -20px rgba(0,0,0,.6);
+  }
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body{
+  font-family: 'Fraunces', Georgia, serif;
+  font-optical-sizing:auto;
+  background: var(--paper);
+  color: var(--ink);
+  line-height:1.6;
+  font-size:18px;
+  /* subtle paper grain */
+  background-image:
+    radial-gradient(rgba(26,24,20,.035) 1px, transparent 1px),
+    radial-gradient(rgba(26,24,20,.025) 1px, transparent 1px);
+  background-size: 3px 3px, 7px 7px;
+  background-position: 0 0, 1px 2px;
+}
+@media (prefers-color-scheme: dark){
+  body{
+    background-image:
+      radial-gradient(rgba(234,223,205,.02) 1px, transparent 1px),
+      radial-gradient(rgba(234,223,205,.015) 1px, transparent 1px);
+  }
+}
+
+/* ---------- Layout ---------- */
+.page{
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 48px 28px 120px;
+}
+@media (max-width: 720px){
+  .page{padding: 28px 20px 80px}
+  body{font-size:17px}
+}
+
+/* ---------- Masthead ---------- */
+.masthead{
+  border-top: 3px double var(--ink);
+  border-bottom: 1px solid var(--rule);
+  padding: 18px 0 14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:20px;
+  flex-wrap:wrap;
+  font-family:'Inter Tight', sans-serif;
+  font-size:13px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+}
+.masthead .vol{font-variant-numeric: tabular-nums}
+
+.title-block{
+  text-align:center;
+  padding: 72px 0 48px;
+  border-bottom: 1px solid var(--rule);
+  position:relative;
+}
+.eyebrow{
+  font-family:'Inter Tight', sans-serif;
+  font-size:12px;
+  letter-spacing:.35em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:24px;
+  font-weight:600;
+}
+h1.title{
+  font-family:'Fraunces', serif;
+  font-weight:400;
+  font-style:italic;
+  font-size: clamp(48px, 9vw, 112px);
+  line-height:.95;
+  margin: 0 0 20px;
+  letter-spacing:-.02em;
+}
+h1.title .amp{
+  font-weight:300;
+  color:var(--accent);
+  font-size:.7em;
+  vertical-align:.08em;
+}
+.subtitle{
+  font-family:'Fraunces', serif;
+  font-weight:300;
+  font-size: clamp(18px, 2.3vw, 24px);
+  color:var(--ink-soft);
+  max-width:640px;
+  margin: 0 auto;
+  font-style:italic;
+}
+.dek{
+  margin-top:32px;
+  font-family:'Inter Tight', sans-serif;
+  font-size:13px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+}
+
+/* ---------- TOC ---------- */
+.toc{
+  margin: 48px auto;
+  max-width: 760px;
+  padding: 28px 32px;
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  box-shadow: var(--shadow);
+}
+.toc h2{
+  font-family:'Inter Tight', sans-serif;
+  font-size:11px;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  margin:0 0 18px;
+  font-weight:600;
+}
+.toc ol{
+  list-style:none;
+  padding:0;
+  margin:0;
+  columns: 2;
+  column-gap:32px;
+}
+@media (max-width:600px){ .toc ol{columns:1} }
+.toc li{
+  padding: 6px 0;
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+  break-inside:avoid;
+}
+.toc .num{
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px;
+  color:var(--accent);
+  font-weight:500;
+  min-width:28px;
+}
+.toc a{
+  color:var(--ink);
+  text-decoration:none;
+  font-size:16px;
+  border-bottom: 1px dotted transparent;
+  transition: border-color .2s;
+}
+.toc a:hover{ border-bottom-color: var(--accent) }
+
+/* ---------- Section ---------- */
+section.chapter{
+  margin: 96px 0;
+  scroll-margin-top: 40px;
+}
+.chapter-head{
+  display:grid;
+  grid-template-columns: 100px 1fr;
+  gap:24px;
+  align-items:start;
+  margin-bottom:36px;
+  padding-bottom:20px;
+  border-bottom: 1px solid var(--rule);
+}
+@media (max-width:600px){
+  .chapter-head{grid-template-columns: 1fr; gap:8px}
+}
+.chapter-num{
+  font-family:'Fraunces', serif;
+  font-style:italic;
+  font-weight:300;
+  font-size:64px;
+  line-height:1;
+  color:var(--accent);
+  letter-spacing:-.02em;
+}
+.chapter-title{
+  font-family:'Fraunces', serif;
+  font-weight:500;
+  font-size: clamp(28px, 4vw, 44px);
+  line-height:1.1;
+  margin:0 0 8px;
+  letter-spacing:-.015em;
+}
+.chapter-kicker{
+  font-family:'Inter Tight', sans-serif;
+  font-size:12px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  font-weight:500;
+}
+
+/* ---------- Prose ---------- */
+.prose{ max-width: 720px }
+.prose p{ margin: 0 0 18px }
+.prose p.lead{
+  font-size:22px;
+  font-weight:300;
+  line-height:1.5;
+  color:var(--ink);
+  margin-bottom:24px;
+}
+.prose p.lead::first-letter{
+  font-family:'Fraunces', serif;
+  font-weight:600;
+  font-style:italic;
+  font-size:4.5em;
+  line-height:.85;
+  float:left;
+  margin: 4px 10px 0 -4px;
+  color:var(--accent);
+}
+
+/* ---------- Pull quote ---------- */
+.pullquote{
+  margin: 40px 0;
+  padding: 28px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  text-align:center;
+}
+.pullquote q{
+  font-family:'Fraunces', serif;
+  font-style:italic;
+  font-weight:400;
+  font-size: clamp(22px, 3vw, 30px);
+  line-height:1.3;
+  quotes: "“" "”";
+  display:block;
+  max-width:720px;
+  margin:0 auto;
+}
+.pullquote q::before{
+  content:open-quote;
+  color:var(--accent);
+  font-size:1.4em;
+  vertical-align:-.15em;
+  margin-right:4px;
+}
+.pullquote q::after{
+  content:close-quote;
+  color:var(--accent);
+  font-size:1.4em;
+  vertical-align:-.15em;
+  margin-left:4px;
+}
+.pullquote cite{
+  display:block;
+  margin-top:14px;
+  font-family:'Inter Tight', sans-serif;
+  font-style:normal;
+  font-size:11px;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+}
+
+/* ---------- Swap cards (bad → good) ---------- */
+.swap-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin: 32px 0;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  overflow:hidden;
+  background: var(--paper-warm);
+}
+@media (max-width:640px){ .swap-grid{grid-template-columns: 1fr} }
+
+.swap{
+  padding: 22px 24px;
+  position:relative;
+}
+.swap + .swap{ border-left: 1px solid var(--rule) }
+@media (max-width:640px){ .swap + .swap{ border-left:none; border-top: 1px solid var(--rule) } }
+
+.swap .tag{
+  font-family:'Inter Tight', sans-serif;
+  font-size:10px;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  font-weight:600;
+  margin-bottom:10px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.swap.bad .tag{ color: var(--bad) }
+.swap.good .tag{ color: var(--ok) }
+.swap .mark{
+  display:inline-block;
+  width:16px; height:16px;
+  border-radius:50%;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:10px;
+}
+.swap.bad .mark{ background:var(--bad); color:var(--paper) }
+.swap.good .mark{ background:var(--ok); color:var(--paper) }
+
+.swap .line{
+  font-family:'Fraunces', serif;
+  font-size:18px;
+  line-height:1.45;
+  font-style:italic;
+  color:var(--ink);
+  margin:0;
+}
+.swap.bad .line{ text-decoration: line-through; text-decoration-color: rgba(168,51,31,.4); text-decoration-thickness: 1px }
+
+/* ---------- Framework callout ---------- */
+.framework{
+  margin: 36px 0;
+  padding: 28px 32px;
+  background: var(--paper-deep);
+  border-left: 3px solid var(--accent);
+  border-radius: 2px;
+}
+.framework .label{
+  font-family:'Inter Tight', sans-serif;
+  font-size:10px;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  color:var(--accent);
+  font-weight:600;
+  margin-bottom:10px;
+}
+.framework h4{
+  font-family:'Fraunces', serif;
+  font-weight:500;
+  font-size:24px;
+  margin:0 0 12px;
+  letter-spacing:-.01em;
+}
+.formula{
+  font-family:'JetBrains Mono', monospace;
+  font-size:14px;
+  background: var(--paper);
+  padding: 10px 14px;
+  border-radius: 2px;
+  display:inline-block;
+  margin-top:6px;
+  letter-spacing:.02em;
+}
+.formula .arrow{ color: var(--accent); margin: 0 6px }
+
+/* ---------- Numbered list (principles) ---------- */
+ol.principles{
+  list-style:none;
+  counter-reset: p;
+  padding:0;
+  margin: 24px 0;
+}
+ol.principles li{
+  counter-increment: p;
+  padding: 18px 0 18px 56px;
+  position:relative;
+  border-bottom: 1px solid var(--rule);
+}
+ol.principles li:last-child{ border-bottom:none }
+ol.principles li::before{
+  content: counter(p, decimal-leading-zero);
+  position:absolute;
+  left:0;
+  top:22px;
+  font-family:'JetBrains Mono', monospace;
+  font-size:12px;
+  color:var(--accent);
+  font-weight:500;
+  letter-spacing:.05em;
+}
+ol.principles .p-title{
+  font-family:'Fraunces', serif;
+  font-weight:600;
+  font-size:19px;
+  display:block;
+  margin-bottom:4px;
+  font-style:italic;
+}
+ol.principles .p-body{
+  font-family:'Fraunces', serif;
+  font-weight:400;
+  color:var(--ink-soft);
+  font-size:16px;
+  line-height:1.55;
+}
+
+/* ---------- Script (cheat sheet) ---------- */
+.script-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  margin: 32px 0;
+}
+.script-card{
+  background: var(--paper);
+  padding: 22px 22px 20px;
+  display:flex;
+  flex-direction:column;
+  min-height:170px;
+}
+.script-card .situation{
+  font-family:'Inter Tight', sans-serif;
+  font-size:11px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  font-weight:600;
+  margin-bottom:14px;
+  padding-bottom:10px;
+  border-bottom: 1px dashed var(--rule);
+}
+.script-card .lines{
+  margin:0;
+  padding:0;
+  list-style:none;
+  flex:1;
+}
+.script-card .lines li{
+  font-family:'Fraunces', serif;
+  font-style:italic;
+  font-size:15px;
+  line-height:1.4;
+  padding: 6px 0 6px 16px;
+  position:relative;
+  color: var(--ink);
+}
+.script-card .lines li::before{
+  content:"›";
+  position:absolute;
+  left:0;
+  color:var(--accent);
+  font-style:normal;
+  font-weight:500;
+}
+
+/* ---------- Checklist (DoR) ---------- */
+.checklist{
+  margin: 32px 0;
+  padding: 28px 32px;
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+}
+.checklist h4{
+  font-family:'Inter Tight', sans-serif;
+  font-size:12px;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  margin:0 0 16px;
+  color:var(--accent);
+  font-weight:600;
+}
+.checklist ul{
+  list-style:none;
+  padding:0;
+  margin:0;
+}
+.checklist li{
+  padding: 8px 0 8px 32px;
+  position:relative;
+  font-size:16px;
+  line-height:1.5;
+  cursor: pointer;
+  transition: color .2s;
+}
+.checklist li::before{
+  content:"";
+  position:absolute;
+  left:0; top:12px;
+  width:16px; height:16px;
+  border: 1.5px solid var(--ink-soft);
+  border-radius: 2px;
+  background: var(--paper);
+  transition: all .2s;
+}
+.checklist li.checked{ color: var(--ink-soft); text-decoration: line-through; text-decoration-color: var(--rule) }
+.checklist li.checked::before{
+  background: var(--ok);
+  border-color: var(--ok);
+}
+.checklist li.checked::after{
+  content:"";
+  position:absolute;
+  left:4px; top:15px;
+  width:8px; height:4px;
+  border-left: 1.5px solid var(--paper);
+  border-bottom: 1.5px solid var(--paper);
+  transform: rotate(-45deg);
+}
+
+/* ---------- Case study ---------- */
+.case{
+  margin: 40px 0;
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+.case .row{
+  display:grid;
+  grid-template-columns: 140px 1fr;
+  gap: 24px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--rule);
+  align-items:start;
+}
+@media (max-width:640px){ .case .row{grid-template-columns: 1fr; gap:6px} }
+.case .row:last-child{ border-bottom:none }
+.case .row-label{
+  font-family:'Inter Tight', sans-serif;
+  font-size:11px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  font-weight:600;
+  padding-top:2px;
+}
+.case .row-body{
+  font-family:'Fraunces', serif;
+  font-size:17px;
+  line-height:1.5;
+}
+.case .row-body em{
+  font-style:italic;
+  color:var(--accent);
+  font-weight:500;
+}
+
+/* ---------- Reading list ---------- */
+.books{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin: 32px 0;
+}
+.book{
+  padding: 24px 26px;
+  border: 1px solid var(--rule);
+  background: var(--paper-warm);
+  border-radius: 2px;
+  display:flex;
+  flex-direction:column;
+  gap: 10px;
+  transition: transform .25s ease, box-shadow .25s ease;
+  position:relative;
+}
+.book:hover{
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.book .shelf{
+  font-family:'Inter Tight', sans-serif;
+  font-size:10px;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  color:var(--accent);
+  font-weight:600;
+}
+.book h4{
+  font-family:'Fraunces', serif;
+  font-weight:500;
+  font-size:22px;
+  margin:0;
+  line-height:1.2;
+  letter-spacing:-.01em;
+}
+.book .author{
+  font-family:'Fraunces', serif;
+  font-style:italic;
+  font-size:15px;
+  color:var(--ink-soft);
+  font-weight:400;
+}
+.book .why{
+  font-family:'Fraunces', serif;
+  font-size:15px;
+  color:var(--ink);
+  line-height:1.45;
+  margin-top:6px;
+}
+
+/* ---------- Colophon / footer ---------- */
+footer{
+  margin-top: 120px;
+  padding-top: 32px;
+  border-top: 3px double var(--ink);
+  text-align:center;
+  font-family:'Inter Tight', sans-serif;
+  font-size:12px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+}
+footer .ornament{
+  font-family:'Fraunces', serif;
+  font-style:italic;
+  font-size:20px;
+  color:var(--accent);
+  margin: 0 0 12px;
+  text-transform:none;
+  letter-spacing:0;
+}
+
+/* ---------- Highlight inline ---------- */
+.hl{
+  background: linear-gradient(180deg, transparent 55%, var(--hl) 55%);
+  padding: 0 2px;
+}
+
+/* ---------- Small utility ---------- */
+.mono{ font-family:'JetBrains Mono', monospace; font-size:.9em }
+
+/* Smooth reveal on scroll */
+.reveal{ opacity:0; transform: translateY(8px); transition: opacity .7s ease, transform .7s ease }
+.reveal.in{ opacity:1; transform: none }
+
+/* Print-ish selection */
+::selection{ background: var(--accent); color: var(--paper) }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- MASTHEAD -->
+  <div class="masthead">
+    <span>A Personal Handbook</span>
+    <span class="vol">Vol. I · Living Edition</span>
+    <span>On Communication &amp; Craft</span>
+  </div>
+
+  <!-- TITLE -->
+  <header class="title-block">
+    <div class="eyebrow">Notes to myself, kept in plain sight</div>
+    <h1 class="title">The Quiet <span class="amp">&amp;</span> Lead</h1>
+    <p class="subtitle">Small corrections, repeated daily — on tone, conflict, and growing from engineer into someone people trust.</p>
+    <div class="dek">Field Notes · Scripts · Frameworks · Reading</div>
+  </header>
+
+  <!-- TOC -->
+  <nav class="toc reveal">
+    <h2>Contents</h2>
+    <ol>
+      <li><span class="num">01</span><a href="#intent-impact">The Gap Between Intent and Impact</a></li>
+      <li><span class="num">02</span><a href="#buffer">The Professional Buffer</a></li>
+      <li><span class="num">03</span><a href="#swap">Phrases to Retire</a></li>
+      <li><span class="num">04</span><a href="#script">The Meeting Script</a></li>
+      <li><span class="num">05</span><a href="#person-to-process">From Person to Process</a></li>
+      <li><span class="num">06</span><a href="#dor">A Readiness Gate</a></li>
+      <li><span class="num">07</span><a href="#tech-lead">On Acting Like an Owner</a></li>
+      <li><span class="num">08</span><a href="#case">A Case in Miniature</a></li>
+      <li><span class="num">09</span><a href="#principles">Principles, Kept Short</a></li>
+      <li><span class="num">10</span><a href="#reading">Further Reading</a></li>
+    </ol>
+  </nav>
+
+  <!-- CH 01 -->
+  <section class="chapter" id="intent-impact">
+    <div class="chapter-head">
+      <div class="chapter-num">01</div>
+      <div>
+        <div class="chapter-kicker">Chapter One</div>
+        <h2 class="chapter-title">The Gap Between Intent and Impact</h2>
+      </div>
+    </div>
+    <div class="prose">
+      <p class="lead">Most workplace conflict is not a disagreement about the work. It is a disagreement about how the work was said. You can be entirely right and still lose the room — because the room is listening for respect before it listens for reason.</p>
+      <p>A neutral sentence, delivered at the wrong moment or with the wrong weight, can land as sarcasm. A correction offered publicly — even gently — can read as a humiliation. The content was never the problem. The packaging was.</p>
+      <p>The first discipline, then, is noticing that <span class="hl">what you meant and what they received are two different objects</span>. Intent lives in your head. Impact lives in theirs. Leadership is the work of closing that gap.</p>
+    </div>
+
+    <div class="pullquote">
+      <q>You handled the content correctly. Your communication style is what needs refinement.</q>
+      <cite>— The lesson, distilled</cite>
+    </div>
+  </section>
+
+  <!-- CH 02 -->
+  <section class="chapter" id="buffer">
+    <div class="chapter-head">
+      <div class="chapter-num">02</div>
+      <div>
+        <div class="chapter-kicker">Chapter Two</div>
+        <h2 class="chapter-title">The Professional Buffer</h2>
+      </div>
+    </div>
+    <div class="prose">
+      <p>Blunt isn’t wrong; blunt is unbuffered. The simplest upgrade to tone is a three-beat formula you can apply on the fly, in any meeting, in any language.</p>
+    </div>
+
+    <div class="framework">
+      <div class="label">Formula</div>
+      <h4>Acknowledge · State · Suggest</h4>
+      <p style="margin:0;color:var(--ink-soft);font-size:16px">First make the other person feel heard. Then make your point. Then open a door they can walk through.</p>
+      <div class="formula">acknowledge <span class="arrow">→</span> state <span class="arrow">→</span> suggest</div>
+    </div>
+
+    <div class="swap-grid">
+      <div class="swap bad">
+        <div class="tag"><span class="mark">✕</span> Blunt</div>
+        <p class="line">This doesn’t make sense.</p>
+      </div>
+      <div class="swap good">
+        <div class="tag"><span class="mark">✓</span> Buffered</div>
+        <p class="line">I’m not fully clear on this part — can we walk through it once?</p>
+      </div>
+    </div>
+
+    <div class="swap-grid">
+      <div class="swap bad">
+        <div class="tag"><span class="mark">✕</span> Blunt</div>
+        <p class="line">You’re not letting me speak.</p>
+      </div>
+      <div class="swap good">
+        <div class="tag"><span class="mark">✓</span> Buffered</div>
+        <p class="line">Let me quickly complete my point, then I’d like to hear your view.</p>
+      </div>
+    </div>
+
+    <div class="swap-grid">
+      <div class="swap bad">
+        <div class="tag"><span class="mark">✕</span> Blunt</div>
+        <p class="line">I already told you this.</p>
+      </div>
+      <div class="swap good">
+        <div class="tag"><span class="mark">✓</span> Buffered</div>
+        <p class="line">I think we touched on this earlier — maybe we can align again.</p>
+      </div>
+    </div>
+
+    <div class="swap-grid">
+      <div class="swap bad">
+        <div class="tag"><span class="mark">✕</span> Blunt</div>
+        <p class="line">You said ten seconds but it’s been two minutes.</p>
+      </div>
+      <div class="swap good">
+        <div class="tag"><span class="mark">✓</span> Buffered</div>
+        <p class="line">Can I jump in once you wrap this thought?</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CH 03 -->
+  <section class="chapter" id="swap">
+    <div class="chapter-head">
+      <div class="chapter-num">03</div>
+      <div>
+        <div class="chapter-kicker">Chapter Three</div>
+        <h2 class="chapter-title">Phrases to Retire</h2>
+      </div>
+    </div>
+    <div class="prose">
+      <p>Five phrases do more damage than their size suggests. Remove them from active vocabulary and replace them with five quieter alternatives. This single swap, repeated for a month, changes how people experience you.</p>
+    </div>
+
+    <div class="swap-grid">
+      <div class="swap bad"><div class="tag"><span class="mark">✕</span></div><p class="line">I already told you.</p></div>
+      <div class="swap good"><div class="tag"><span class="mark">✓</span></div><p class="line">Maybe we can align on this once more.</p></div>
+    </div>
+    <div class="swap-grid">
+      <div class="swap bad"><div class="tag"><span class="mark">✕</span></div><p class="line">This is wrong.</p></div>
+      <div class="swap good"><div class="tag"><span class="mark">✓</span></div><p class="line">I might be missing something, but…</p></div>
+    </div>
+    <div class="swap-grid">
+      <div class="swap bad"><div class="tag"><span class="mark">✕</span></div><p class="line">You are not understanding.</p></div>
+      <div class="swap good"><div class="tag"><span class="mark">✓</span></div><p class="line">Can we look at it this way?</p></div>
+    </div>
+    <div class="swap-grid">
+      <div class="swap bad"><div class="tag"><span class="mark">✕</span></div><p class="line">This is obvious.</p></div>
+      <div class="swap good"><div class="tag"><span class="mark">✓</span></div><p class="line">Just to confirm our shared understanding…</p></div>
+    </div>
+    <div class="swap-grid">
+      <div class="swap bad"><div class="tag"><span class="mark">✕</span></div><p class="line">You didn’t do this.</p></div>
+      <div class="swap good"><div class="tag"><span class="mark">✓</span></div><p class="line">One suggestion here — we might want to add…</p></div>
+    </div>
+
+    <div class="pullquote">
+      <q>You don’t need to become soft. You need to become clear, respectful, and structured.</q>
+    </div>
+  </section>
+
+  <!-- CH 04 -->
+  <section class="chapter" id="script">
+    <div class="chapter-head">
+      <div class="chapter-num">04</div>
+      <div>
+        <div class="chapter-kicker">Chapter Four</div>
+        <h2 class="chapter-title">The Meeting Script</h2>
+      </div>
+    </div>
+    <div class="prose">
+      <p>When the pressure is live, you won’t invent language — you will reach for whatever is already on the shelf. Put these on the shelf. Read them until they feel like your own voice.</p>
+    </div>
+
+    <div class="script-grid">
+      <div class="script-card">
+        <div class="situation">To enter a conversation</div>
+        <ul class="lines">
+          <li>Can I add something here?</li>
+          <li>Just building on that point…</li>
+          <li>Let me share my understanding.</li>
+        </ul>
+      </div>
+      <div class="script-card">
+        <div class="situation">To disagree</div>
+        <ul class="lines">
+          <li>I see your point, though one concern is…</li>
+          <li>That makes sense — another angle could be…</li>
+          <li>I might be missing something, but I see it differently.</li>
+        </ul>
+      </div>
+      <div class="script-card">
+        <div class="situation">When something is unclear</div>
+        <ul class="lines">
+          <li>I’m not fully clear on this — can you walk me through it?</li>
+          <li>Just to confirm my understanding…</li>
+          <li>Can we clarify how this works in implementation?</li>
+        </ul>
+      </div>
+      <div class="script-card">
+        <div class="situation">When interrupted</div>
+        <ul class="lines">
+          <li>Let me quickly complete, then I’ll come to you.</li>
+          <li>Ten seconds — I’ll wrap this up.</li>
+        </ul>
+      </div>
+      <div class="script-card">
+        <div class="situation">When someone monologues</div>
+        <ul class="lines">
+          <li>Can I jump in once you wrap this thought?</li>
+          <li>Let me add one point here.</li>
+        </ul>
+      </div>
+      <div class="script-card">
+        <div class="situation">To give feedback</div>
+        <ul class="lines">
+          <li>One suggestion here…</li>
+          <li>We might want to add more detail around…</li>
+          <li>From a developer perspective, it would help if…</li>
+        </ul>
+      </div>
+      <div class="script-card">
+        <div class="situation">When going off-track</div>
+        <ul class="lines">
+          <li>Maybe we can take this offline and stay on the main agenda?</li>
+          <li>Let’s park this for now and come back if needed.</li>
+        </ul>
+      </div>
+      <div class="script-card">
+        <div class="situation">To close your point</div>
+        <ul class="lines">
+          <li>That’s my view — happy to hear others.</li>
+          <li>Let me pause here and get your thoughts.</li>
+        </ul>
+      </div>
+      <div class="script-card" style="background: var(--paper-deep)">
+        <div class="situation" style="color:var(--accent)">The emergency neutralizer</div>
+        <ul class="lines">
+          <li style="font-size:17px">Maybe I’m missing something here…</li>
+        </ul>
+        <p style="font-family:'Fraunces',serif;font-size:14px;color:var(--ink-soft);font-style:italic;margin:10px 0 0">Use when tension rises. It reduces conflict instantly without surrendering your authority.</p>
+      </div>
+    </div>
+
+    <div class="framework">
+      <div class="label">Cheat Card</div>
+      <h4>Start soft · Say your point · End open</h4>
+      <p style="margin:0;color:var(--ink-soft);font-size:16px"><em>“Just adding here…”</em> → <em>[your logic]</em> → <em>“What do you think?”</em></p>
+    </div>
+  </section>
+
+  <!-- CH 05 -->
+  <section class="chapter" id="person-to-process">
+    <div class="chapter-head">
+      <div class="chapter-num">05</div>
+      <div>
+        <div class="chapter-kicker">Chapter Five</div>
+        <h2 class="chapter-title">From Person to Process</h2>
+      </div>
+    </div>
+    <div class="prose">
+      <p class="lead">When the same conversation keeps repeating itself, the problem is no longer the conversation. It is the absence of structure around it. You can argue with a person forever. You cannot argue with a checklist.</p>
+      <p>Shift the frame: stop trying to <em>make them understand</em>, and start <em>making expectations explicit and documented</em>. This is the single move that separates a senior engineer from a tech lead, and a tech lead from a manager.</p>
+    </div>
+
+    <div class="pullquote">
+      <q>Clarity in documentation avoids conflict in discussion.</q>
+    </div>
+
+    <div class="prose">
+      <p>The instinct, when frustrated, is to take over — to write the story yourself, to do the BA’s job. Resist it. Taking over produces burnout, role confusion, and no long-term fix. The leverage is elsewhere: in creating a structure that makes the gap self-evident, without you ever having to name it.</p>
+    </div>
+  </section>
+
+  <!-- CH 06 -->
+  <section class="chapter" id="dor">
+    <div class="chapter-head">
+      <div class="chapter-num">06</div>
+      <div>
+        <div class="chapter-kicker">Chapter Six</div>
+        <h2 class="chapter-title">A Readiness Gate</h2>
+      </div>
+    </div>
+    <div class="prose">
+      <p>A Definition of Ready is not bureaucracy. It is a quiet, unarguable standard that turns personal friction into shared process. Nothing enters development until the checklist is green — no negotiation needed, because the rule was agreed to in advance.</p>
+    </div>
+
+    <div class="checklist" id="dor-check">
+      <h4>Definition of Ready · Tap to check</h4>
+      <ul>
+        <li>Business context is defined</li>
+        <li>Acceptance criteria are complete (Given / When / Then)</li>
+        <li>At least two example scenarios are provided</li>
+        <li>Expected input and output are clearly defined</li>
+        <li>Edge cases are identified</li>
+        <li>Dependencies are listed</li>
+        <li>No open functional questions remain</li>
+      </ul>
+    </div>
+
+    <div class="framework">
+      <div class="label">Standard Response</div>
+      <h4>When a story isn’t ready</h4>
+      <p style="margin:0;font-family:'Fraunces',serif;font-size:16px;font-style:italic;color:var(--ink-soft)">“From a development perspective, this story is not yet ready. Missing: example scenario, expected output, edge-case handling. Once these are added, we can proceed.”</p>
+      <p style="margin:12px 0 0;font-size:14px;font-family:'Inter Tight',sans-serif;color:var(--ink-soft)">No emotion. No argument. Just the standard.</p>
+    </div>
+
+    <div class="prose" style="margin-top:30px">
+      <p>When asked to start anyway: <em style="color:var(--accent);font-style:italic">“Sure, I can begin with assumptions — but there’s a risk of rework. Would you like me to proceed, or should we clarify first?”</em> This is not refusal. It is shifted responsibility, and it is how accountability is made visible without confrontation.</p>
+    </div>
+  </section>
+
+  <!-- CH 07 -->
+  <section class="chapter" id="tech-lead">
+    <div class="chapter-head">
+      <div class="chapter-num">07</div>
+      <div>
+        <div class="chapter-kicker">Chapter Seven</div>
+        <h2 class="chapter-title">On Acting Like an Owner</h2>
+      </div>
+    </div>
+    <div class="prose">
+      <p class="lead">You don’t need the title. You need the posture. A tech lead is not a manager in miniature — it is the person who ensures the work is implementable, who reduces ambiguity, who protects the team from rework, and who builds structure where structure is missing.</p>
+      <p>Ordering people, evaluating performance, fixing personalities — those belong to someone else. Clarity, process, delivery quality — those belong to you. The shift is not about authority; it is about ownership.</p>
+    </div>
+
+    <div class="framework">
+      <div class="label">The Shift</div>
+      <h4>From solving problems to preventing them</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px;font-size:16px">
+        <div>
+          <div style="font-family:'Inter Tight',sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px">Senior Engineer</div>
+          <p style="margin:0;font-style:italic;font-family:'Fraunces',serif">Solves problems · Reacts · Focus on code</p>
+        </div>
+        <div>
+          <div style="font-family:'Inter Tight',sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:8px">Tech Lead</div>
+          <p style="margin:0;font-style:italic;font-family:'Fraunces',serif">Prevents problems · Designs process · Focus on delivery</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pullquote">
+      <q>Am I making delivery smoother, or harder?</q>
+      <cite>— The only question that matters</cite>
+    </div>
+  </section>
+
+  <!-- CH 08 -->
+  <section class="chapter" id="case">
+    <div class="chapter-head">
+      <div class="chapter-num">08</div>
+      <div>
+        <div class="chapter-kicker">Chapter Eight</div>
+        <h2 class="chapter-title">A Case in Miniature</h2>
+      </div>
+    </div>
+    <div class="prose">
+      <p>One team discussion about story detail went sideways. Studying it closely reveals the whole architecture of modern workplace conflict — and the specific corrections that would have prevented it.</p>
+    </div>
+
+    <div class="case">
+      <div class="row">
+        <div class="row-label">Trigger</div>
+        <div class="row-body">A literal observation — <em>“you said ten seconds but continued speaking”</em> — landed as sarcasm in front of the team.</div>
+      </div>
+      <div class="row">
+        <div class="row-label">Escalation</div>
+        <div class="row-body">The discussion shifted from <em>what is right</em> to <em>how it was said</em>. Both sides began fighting for control of the floor.</div>
+      </div>
+      <div class="row">
+        <div class="row-label">Public turn</div>
+        <div class="row-body">One party took control of the call and asked others to leave — making a private tension into a public incident.</div>
+      </div>
+      <div class="row">
+        <div class="row-label">Underneath</div>
+        <div class="row-body">This was never about one sentence. It was <em>accumulated frustration</em> meeting the first available spark.</div>
+      </div>
+      <div class="row">
+        <div class="row-label">The correction</div>
+        <div class="row-body">Not a better argument. A better script, a 1:1 alignment afterwards, and a structural fix (the readiness gate) so the underlying friction couldn’t recur.</div>
+      </div>
+      <div class="row">
+        <div class="row-label">The damage control</div>
+        <div class="row-body"><em>“I think things got a bit heated. My intention was not to sound sarcastic — if it came across that way, I understand your concern.”</em> Don’t defend. Align. Then move the conversation from behavior back to work.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CH 09 -->
+  <section class="chapter" id="principles">
+    <div class="chapter-head">
+      <div class="chapter-num">09</div>
+      <div>
+        <div class="chapter-kicker">Chapter Nine</div>
+        <h2 class="chapter-title">Principles, Kept Short</h2>
+      </div>
+    </div>
+    <div class="prose">
+      <p>Read before meetings. Read after difficult ones. These are the ones that fit on a single card.</p>
+    </div>
+
+    <ol class="principles">
+      <li>
+        <span class="p-title">Intent is not impact.</span>
+        <span class="p-body">What you meant lives in your head. What they heard lives in theirs. Leadership is closing that gap, not defending your intent.</span>
+      </li>
+      <li>
+        <span class="p-title">Never correct tone or timing in public.</span>
+        <span class="p-body">It always escalates. Always. Take it to a 1:1, and take it there calmly.</span>
+      </li>
+      <li>
+        <span class="p-title">Don’t defend. Align.</span>
+        <span class="p-body">After a flare-up, the first move is acknowledgment, not justification. <em>“If it came across that way, I understand.”</em></span>
+      </li>
+      <li>
+        <span class="p-title">Ask questions instead of declaring errors.</span>
+        <span class="p-body">A question invites. A declaration accuses. Reach for <em>“Can we clarify…?”</em> before <em>“This is wrong.”</em></span>
+      </li>
+      <li>
+        <span class="p-title">Shift from person to process.</span>
+        <span class="p-body">When the same problem recurs, stop debating the person and start designing the structure that makes the problem visible.</span>
+      </li>
+      <li>
+        <span class="p-title">Put things in writing.</span>
+        <span class="p-body">Verbal agreements evaporate. A short written summary after every discussion creates accountability without confrontation.</span>
+      </li>
+      <li>
+        <span class="p-title">Own the outcome, not the people.</span>
+        <span class="p-body">A tech lead is a delivery owner, not a miniature manager. You don’t manage personalities; you remove ambiguity.</span>
+      </li>
+      <li>
+        <span class="p-title">Package your intelligence.</span>
+        <span class="p-body">Being right is not enough. The same idea, better delivered, will travel further. Lower the volume; raise the clarity.</span>
+      </li>
+      <li>
+        <span class="p-title">Start soft, end open.</span>
+        <span class="p-body">Open with <em>“Just adding here…”</em>, close with <em>“What do you think?”</em>. Authority survives intact; ego dissolves.</span>
+      </li>
+      <li>
+        <span class="p-title">When in doubt, say: <em>“Maybe I’m missing something, but…”</em></span>
+        <span class="p-body">One phrase, infinite uses. It opens the door, lowers the temperature, and never costs you an inch of ground.</span>
+      </li>
+    </ol>
+  </section>
+
+  <!-- CH 10 -->
+  <section class="chapter" id="reading">
+    <div class="chapter-head">
+      <div class="chapter-num">10</div>
+      <div>
+        <div class="chapter-kicker">Chapter Ten</div>
+        <h2 class="chapter-title">Further Reading</h2>
+      </div>
+    </div>
+    <div class="prose">
+      <p>Ten books, chosen carefully — not a wall of recommendations, but the ones that actually change how you handle Monday morning. Each is annotated with why it earns a place on the shelf.</p>
+    </div>
+
+    <div class="books">
+      <div class="book">
+        <div class="shelf">Conversation</div>
+        <h4>Crucial Conversations</h4>
+        <div class="author">Patterson, Grenny, McMillan &amp; Switzler</div>
+        <p class="why">The definitive manual for high-stakes talks. Teaches how to stay in dialogue when stakes are high, opinions differ, and emotions run strong. Directly addresses the moment when a team discussion turns personal.</p>
+      </div>
+      <div class="book">
+        <div class="shelf">Difficult feedback</div>
+        <h4>Thanks for the Feedback</h4>
+        <div class="author">Douglas Stone &amp; Sheila Heen</div>
+        <p class="why">Explains why even well-meant feedback triggers defensiveness, and how to receive it without collapsing or arguing. Pair with <em>Difficult Conversations</em> by the same authors.</p>
+      </div>
+      <div class="book">
+        <div class="shelf">Management</div>
+        <h4>The Manager’s Path</h4>
+        <div class="author">Camille Fournier</div>
+        <p class="why">Written for engineers. Covers the transition from senior engineer to tech lead to manager — with specific chapters on ownership, influence without authority, and the hardest conversations.</p>
+      </div>
+      <div class="book">
+        <div class="shelf">Direct leadership</div>
+        <h4>Radical Candor</h4>
+        <div class="author">Kim Scott</div>
+        <p class="why">Care personally, challenge directly. Gives a vocabulary for being honest without being harsh, and explains the trap of <em>ruinous empathy</em> — softening so much the message never lands.</p>
+      </div>
+      <div class="book">
+        <div class="shelf">Listening</div>
+        <h4>Nonviolent Communication</h4>
+        <div class="author">Marshall B. Rosenberg</div>
+        <p class="why">A framework for expressing needs and hearing others without blame or judgment. Changes how you diagnose what a conflict is actually about, which is usually not what it appears to be.</p>
+      </div>
+      <div class="book">
+        <div class="shelf">Negotiation</div>
+        <h4>Never Split the Difference</h4>
+        <div class="author">Chris Voss</div>
+        <p class="why">Tactical empathy from a former FBI negotiator. The techniques — labelling, mirroring, calibrated questions — translate directly to standups, 1:1s, and any moment someone is being defensive.</p>
+      </div>
+      <div class="book">
+        <div class="shelf">Emotional clarity</div>
+        <h4>Search Inside Yourself</h4>
+        <div class="author">Chade-Meng Tan</div>
+        <p class="why">Emotional intelligence for engineers, from a Google engineer. Pragmatic, unmystical, and practical. Teaches the pause between stimulus and response — the space where tone is chosen.</p>
+      </div>
+      <div class="book">
+        <div class="shelf">Identity &amp; habit</div>
+        <h4>Atomic Habits</h4>
+        <div class="author">James Clear</div>
+        <p class="why">Changing communication is not a decision — it is a habit. This book explains how to design your environment so new patterns (swapping one blunt phrase a day) compound into a new default.</p>
+      </div>
+      <div class="book">
+        <div class="shelf">Leadership presence</div>
+        <h4>The Making of a Manager</h4>
+        <div class="author">Julie Zhuo</div>
+        <p class="why">Honest, field-level writing from a Facebook VP. Covers the subtle shifts — running meetings, giving feedback, building trust — that distinguish a good lead from a great one.</p>
+      </div>
+      <div class="book">
+        <div class="shelf">Thinking clearly</div>
+        <h4>Thinking, Fast and Slow</h4>
+        <div class="author">Daniel Kahneman</div>
+        <p class="why">Not a leadership book, but the foundation under every leadership book. Understanding your own cognitive biases is the first step to noticing when you’re reacting, not thinking.</p>
+      </div>
+      <div class="book">
+        <div class="shelf">Agile delivery</div>
+        <h4>User Story Mapping</h4>
+        <div class="author">Jeff Patton</div>
+        <p class="why">The book to hand a BA (or read yourself) when documentation quality is the bottleneck. Teaches how to structure stories so implementation is obvious — fixing the system, not the person.</p>
+      </div>
+      <div class="book">
+        <div class="shelf">Philosophy · brief</div>
+        <h4>Meditations</h4>
+        <div class="author">Marcus Aurelius</div>
+        <p class="why">A Roman emperor’s private notebook on self-discipline, patience, and dealing with difficult colleagues. Two thousand years old, still the best short read on keeping composure under provocation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="ornament">❦</div>
+    <div>Hand-assembled · A living document · Updated as lessons arrive</div>
+    <div style="margin-top:10px">Set in Fraunces, Inter Tight &amp; JetBrains Mono</div>
+  </footer>
+
+</div>
+
+<script>
+// Reveal on scroll
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:.12});
+document.querySelectorAll('.reveal, .chapter, .swap-grid, .framework, .pullquote, .checklist, .books, .case, ol.principles, .script-grid').forEach(el=>{
+  el.classList.add('reveal');
+  io.observe(el);
+});
+
+// DoR checklist toggle
+document.querySelectorAll('#dor-check li').forEach(li=>{
+  li.addEventListener('click', ()=> li.classList.toggle('checked'));
+});
+</script>
+</body>
+</html>
